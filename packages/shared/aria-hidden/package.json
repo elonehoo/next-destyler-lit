@@ -1,0 +1,28 @@
+{
+  "name": "@destyler/aria-hidden",
+  "type": "module",
+  "version": "0.0.6",
+  "description": "core logic for the accordion widget implemented as a state machine",
+  "author": "Elone Hoo <elonehoo@gmail.com>",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "*.d.ts",
+    "dist"
+  ],
+  "scripts": {
+    "clear": "rimraf ./dist",
+    "prepublishOnly": "pnpm run build",
+    "build": "pnpm run clear && unbuild",
+    "stub": "unbuild --stub"
+  }
+}

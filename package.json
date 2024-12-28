@@ -11,17 +11,18 @@
   ],
   "scripts": {
     "build": "pnpm run --filter \"./packages/**\" -r build",
-    "story:dev": "storybook dev -p 6006 --no-open",
-    "story:build": "storybook build",
-    "story:preview": "storybook --help",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "vitest"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",
+    "jsdom": "^25.0.1",
     "rimraf": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:"
   }
 }

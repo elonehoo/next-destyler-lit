@@ -11,6 +11,9 @@ export default antfu({
 
 }, {
   rules: {
-    'vue/no-template-shadow': 'off',
+    'n/prefer-global/process': 'off',
+    'ts/no-this-alias': 'off',
+    'ts/no-empty-object-type': 'off',
+    'regexp/no-unused-capturing-group': 'off',
   },
 })
