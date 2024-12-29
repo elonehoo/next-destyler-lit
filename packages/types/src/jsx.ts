@@ -1,4 +1,4 @@
-import type * as CSS from "csstype"
+import type * as CSS from 'csstype'
 
 type NativeAnimationEvent = AnimationEvent
 type NativeClipboardEvent = ClipboardEvent
@@ -12,7 +12,7 @@ type NativePointerEvent = PointerEvent
 type NativeTransitionEvent = TransitionEvent
 type NativeUIEvent = UIEvent
 type NativeWheelEvent = WheelEvent
-type Booleanish = boolean | "true" | "false"
+type Booleanish = boolean | 'true' | 'false'
 
 export namespace JSX {
   export interface BaseSyntheticEvent<E = object, C = any, T = any> {
@@ -56,7 +56,7 @@ export namespace JSX {
     twist: number
     width: number
     height: number
-    pointerType: "mouse" | "pen" | "touch"
+    pointerType: 'mouse' | 'pen' | 'touch'
     isPrimary: boolean
   }
 
@@ -170,9 +170,9 @@ export namespace JSX {
   // Event Handler Types
   // ----------------------------------------------------------------------
 
-  type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }["bivarianceHack"]
+  type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack']
 
-  type ZagEventHandler<T = Element> = EventHandler<SyntheticEvent<T>>
+  type DestylerEventHandler<T = Element> = EventHandler<SyntheticEvent<T>>
 
   export type ClipboardEventHandler<T = Element> = EventHandler<ClipboardEvent<T>>
   export type CompositionEventHandler<T = Element> = EventHandler<CompositionEvent<T>>
@@ -220,34 +220,34 @@ export namespace JSX {
     onInvalid?: FormEventHandler<T> | undefined
 
     // Image Events
-    onLoad?: ZagEventHandler<T> | undefined
-    onError?: ZagEventHandler<T> | undefined
+    onLoad?: DestylerEventHandler<T> | undefined
+    onError?: DestylerEventHandler<T> | undefined
     onKeyDown?: KeyboardEventHandler<T> | undefined
     onKeyUp?: KeyboardEventHandler<T> | undefined
 
     // Media Events
-    onAbort?: ZagEventHandler<T> | undefined
-    onCanPlay?: ZagEventHandler<T> | undefined
-    onCanPlayThrough?: ZagEventHandler<T> | undefined
-    onDurationChange?: ZagEventHandler<T> | undefined
-    onEmptied?: ZagEventHandler<T> | undefined
-    onEncrypted?: ZagEventHandler<T> | undefined
-    onEnded?: ZagEventHandler<T> | undefined
-    onLoadedData?: ZagEventHandler<T> | undefined
-    onLoadedMetadata?: ZagEventHandler<T> | undefined
-    onLoadStart?: ZagEventHandler<T> | undefined
-    onPause?: ZagEventHandler<T> | undefined
-    onPlay?: ZagEventHandler<T> | undefined
-    onPlaying?: ZagEventHandler<T> | undefined
-    onProgress?: ZagEventHandler<T> | undefined
-    onRateChange?: ZagEventHandler<T> | undefined
-    onSeeked?: ZagEventHandler<T> | undefined
-    onSeeking?: ZagEventHandler<T> | undefined
-    onStalled?: ZagEventHandler<T> | undefined
-    onSuspend?: ZagEventHandler<T> | undefined
-    onTimeUpdate?: ZagEventHandler<T> | undefined
-    onVolumeChange?: ZagEventHandler<T> | undefined
-    onWaiting?: ZagEventHandler<T> | undefined
+    onAbort?: DestylerEventHandler<T> | undefined
+    onCanPlay?: DestylerEventHandler<T> | undefined
+    onCanPlayThrough?: DestylerEventHandler<T> | undefined
+    onDurationChange?: DestylerEventHandler<T> | undefined
+    onEmptied?: DestylerEventHandler<T> | undefined
+    onEncrypted?: DestylerEventHandler<T> | undefined
+    onEnded?: DestylerEventHandler<T> | undefined
+    onLoadedData?: DestylerEventHandler<T> | undefined
+    onLoadedMetadata?: DestylerEventHandler<T> | undefined
+    onLoadStart?: DestylerEventHandler<T> | undefined
+    onPause?: DestylerEventHandler<T> | undefined
+    onPlay?: DestylerEventHandler<T> | undefined
+    onPlaying?: DestylerEventHandler<T> | undefined
+    onProgress?: DestylerEventHandler<T> | undefined
+    onRateChange?: DestylerEventHandler<T> | undefined
+    onSeeked?: DestylerEventHandler<T> | undefined
+    onSeeking?: DestylerEventHandler<T> | undefined
+    onStalled?: DestylerEventHandler<T> | undefined
+    onSuspend?: DestylerEventHandler<T> | undefined
+    onTimeUpdate?: DestylerEventHandler<T> | undefined
+    onVolumeChange?: DestylerEventHandler<T> | undefined
+    onWaiting?: DestylerEventHandler<T> | undefined
 
     // MouseEvents
     onAuxClick?: MouseEventHandler<T> | undefined
@@ -271,7 +271,7 @@ export namespace JSX {
     onMouseUp?: MouseEventHandler<T> | undefined
 
     // Selection Events
-    onSelect?: ZagEventHandler<T> | undefined
+    onSelect?: DestylerEventHandler<T> | undefined
 
     // Touch Events
     onTouchCancel?: TouchEventHandler<T> | undefined
@@ -311,273 +311,273 @@ export namespace JSX {
   // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
   export interface AriaAttributes {
     /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
-    "aria-activedescendant"?: string | undefined
+    'aria-activedescendant'?: string | undefined
     /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
-    "aria-atomic"?: Booleanish | undefined
+    'aria-atomic'?: Booleanish | undefined
     /**
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      */
-    "aria-autocomplete"?: "none" | "inline" | "list" | "both" | undefined
+    'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' | undefined
     /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
-    "aria-busy"?: Booleanish | undefined
+    'aria-busy'?: Booleanish | undefined
     /**
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
      */
-    "aria-checked"?: boolean | "false" | "mixed" | "true" | undefined
+    'aria-checked'?: boolean | 'false' | 'mixed' | 'true' | undefined
     /**
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
      */
-    "aria-colcount"?: number | undefined
+    'aria-colcount'?: number | undefined
     /**
      * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
      * @see aria-colcount @see aria-colspan.
      */
-    "aria-colindex"?: number | undefined
+    'aria-colindex'?: number | undefined
     /**
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
      */
-    "aria-colspan"?: number | undefined
+    'aria-colspan'?: number | undefined
     /**
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
      */
-    "aria-controls"?: string | undefined
+    'aria-controls'?: string | undefined
     /** Indicates the element that represents the current item within a container or set of related elements. */
-    "aria-current"?: boolean | "false" | "true" | "page" | "step" | "location" | "date" | "time" | undefined
+    'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time' | undefined
     /**
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
      */
-    "aria-describedby"?: string | undefined
+    'aria-describedby'?: string | undefined
     /**
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      */
-    "aria-details"?: string | undefined
+    'aria-details'?: string | undefined
     /**
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
      */
-    "aria-disabled"?: Booleanish | undefined
+    'aria-disabled'?: Booleanish | undefined
     /**
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
      */
-    "aria-dropeffect"?: "none" | "copy" | "execute" | "link" | "move" | "popup" | undefined
+    'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' | undefined
     /**
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
      */
-    "aria-errormessage"?: string | undefined
+    'aria-errormessage'?: string | undefined
     /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
-    "aria-expanded"?: Booleanish | undefined
+    'aria-expanded'?: Booleanish | undefined
     /**
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
      */
-    "aria-flowto"?: string | undefined
+    'aria-flowto'?: string | undefined
     /**
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
      */
-    "aria-grabbed"?: Booleanish | undefined
+    'aria-grabbed'?: Booleanish | undefined
     /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-    "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog" | undefined
+    'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | undefined
     /**
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
      */
-    "aria-hidden"?: Booleanish | undefined
+    'aria-hidden'?: Booleanish | undefined
     /**
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      */
-    "aria-invalid"?: boolean | "false" | "true" | "grammar" | "spelling" | undefined
+    'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling' | undefined
     /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
-    "aria-keyshortcuts"?: string | undefined
+    'aria-keyshortcuts'?: string | undefined
     /**
      * Defines a string value that labels the current element.
      * @see aria-labelledby.
      */
-    "aria-label"?: string | undefined
+    'aria-label'?: string | undefined
     /**
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      */
-    "aria-labelledby"?: string | undefined
+    'aria-labelledby'?: string | undefined
     /** Defines the hierarchical level of an element within a structure. */
-    "aria-level"?: number | undefined
+    'aria-level'?: number | undefined
     /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
-    "aria-live"?: "off" | "assertive" | "polite" | undefined
+    'aria-live'?: 'off' | 'assertive' | 'polite' | undefined
     /** Indicates whether an element is modal when displayed. */
-    "aria-modal"?: Booleanish | undefined
+    'aria-modal'?: Booleanish | undefined
     /** Indicates whether a text box accepts multiple lines of input or only a single line. */
-    "aria-multiline"?: Booleanish | undefined
+    'aria-multiline'?: Booleanish | undefined
     /** Indicates that the user may select more than one item from the current selectable descendants. */
-    "aria-multiselectable"?: Booleanish | undefined
+    'aria-multiselectable'?: Booleanish | undefined
     /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
-    "aria-orientation"?: "horizontal" | "vertical" | undefined
+    'aria-orientation'?: 'horizontal' | 'vertical' | undefined
     /**
      * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
      */
-    "aria-owns"?: string | undefined
+    'aria-owns'?: string | undefined
     /**
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
      */
-    "aria-placeholder"?: string | undefined
+    'aria-placeholder'?: string | undefined
     /**
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
      */
-    "aria-posinset"?: number | undefined
+    'aria-posinset'?: number | undefined
     /**
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
      */
-    "aria-pressed"?: boolean | "false" | "mixed" | "true" | undefined
+    'aria-pressed'?: boolean | 'false' | 'mixed' | 'true' | undefined
     /**
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
      */
-    "aria-readonly"?: Booleanish | undefined
+    'aria-readonly'?: Booleanish | undefined
     /**
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
      */
-    "aria-relevant"?:
-      | "additions"
-      | "additions removals"
-      | "additions text"
-      | "all"
-      | "removals"
-      | "removals additions"
-      | "removals text"
-      | "text"
-      | "text additions"
-      | "text removals"
+    'aria-relevant'?:
+      | 'additions'
+      | 'additions removals'
+      | 'additions text'
+      | 'all'
+      | 'removals'
+      | 'removals additions'
+      | 'removals text'
+      | 'text'
+      | 'text additions'
+      | 'text removals'
       | undefined
     /** Indicates that user input is required on the element before a form may be submitted. */
-    "aria-required"?: Booleanish | undefined
+    'aria-required'?: Booleanish | undefined
     /** Defines a human-readable, author-localized description for the role of an element. */
-    "aria-roledescription"?: string | undefined
+    'aria-roledescription'?: string | undefined
     /**
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
      */
-    "aria-rowcount"?: number | undefined
+    'aria-rowcount'?: number | undefined
     /**
      * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
      * @see aria-rowcount @see aria-rowspan.
      */
-    "aria-rowindex"?: number | undefined
+    'aria-rowindex'?: number | undefined
     /**
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
      */
-    "aria-rowspan"?: number | undefined
+    'aria-rowspan'?: number | undefined
     /**
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
      */
-    "aria-selected"?: Booleanish | undefined
+    'aria-selected'?: Booleanish | undefined
     /**
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
      */
-    "aria-setsize"?: number | undefined
+    'aria-setsize'?: number | undefined
     /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-    "aria-sort"?: "none" | "ascending" | "descending" | "other" | undefined
+    'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other' | undefined
     /** Defines the maximum allowed value for a range widget. */
-    "aria-valuemax"?: number | undefined
+    'aria-valuemax'?: number | undefined
     /** Defines the minimum allowed value for a range widget. */
-    "aria-valuemin"?: number | undefined
+    'aria-valuemin'?: number | undefined
     /**
      * Defines the current value for a range widget.
      * @see aria-valuetext.
      */
-    "aria-valuenow"?: number | undefined
+    'aria-valuenow'?: number | undefined
     /** Defines the human readable text alternative of aria-valuenow for a range widget. */
-    "aria-valuetext"?: string | undefined
+    'aria-valuetext'?: string | undefined
   }
 
   // All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions
   type AriaRole =
-    | "alert"
-    | "alertdialog"
-    | "application"
-    | "article"
-    | "banner"
-    | "button"
-    | "cell"
-    | "checkbox"
-    | "columnheader"
-    | "combobox"
-    | "complementary"
-    | "contentinfo"
-    | "definition"
-    | "dialog"
-    | "directory"
-    | "document"
-    | "feed"
-    | "figure"
-    | "form"
-    | "grid"
-    | "gridcell"
-    | "group"
-    | "heading"
-    | "img"
-    | "link"
-    | "list"
-    | "listbox"
-    | "listitem"
-    | "log"
-    | "main"
-    | "marquee"
-    | "math"
-    | "menu"
-    | "menubar"
-    | "menuitem"
-    | "menuitemcheckbox"
-    | "menuitemradio"
-    | "navigation"
-    | "none"
-    | "note"
-    | "option"
-    | "presentation"
-    | "progressbar"
-    | "radio"
-    | "radiogroup"
-    | "region"
-    | "row"
-    | "rowgroup"
-    | "rowheader"
-    | "scrollbar"
-    | "search"
-    | "searchbox"
-    | "separator"
-    | "slider"
-    | "spinbutton"
-    | "status"
-    | "switch"
-    | "tab"
-    | "table"
-    | "tablist"
-    | "tabpanel"
-    | "term"
-    | "textbox"
-    | "timer"
-    | "toolbar"
-    | "tooltip"
-    | "tree"
-    | "treegrid"
-    | "treeitem"
+    | 'alert'
+    | 'alertdialog'
+    | 'application'
+    | 'article'
+    | 'banner'
+    | 'button'
+    | 'cell'
+    | 'checkbox'
+    | 'columnheader'
+    | 'combobox'
+    | 'complementary'
+    | 'contentinfo'
+    | 'definition'
+    | 'dialog'
+    | 'directory'
+    | 'document'
+    | 'feed'
+    | 'figure'
+    | 'form'
+    | 'grid'
+    | 'gridcell'
+    | 'group'
+    | 'heading'
+    | 'img'
+    | 'link'
+    | 'list'
+    | 'listbox'
+    | 'listitem'
+    | 'log'
+    | 'main'
+    | 'marquee'
+    | 'math'
+    | 'menu'
+    | 'menubar'
+    | 'menuitem'
+    | 'menuitemcheckbox'
+    | 'menuitemradio'
+    | 'navigation'
+    | 'none'
+    | 'note'
+    | 'option'
+    | 'presentation'
+    | 'progressbar'
+    | 'radio'
+    | 'radiogroup'
+    | 'region'
+    | 'row'
+    | 'rowgroup'
+    | 'rowheader'
+    | 'scrollbar'
+    | 'search'
+    | 'searchbox'
+    | 'separator'
+    | 'slider'
+    | 'spinbutton'
+    | 'status'
+    | 'switch'
+    | 'tab'
+    | 'table'
+    | 'tablist'
+    | 'tabpanel'
+    | 'term'
+    | 'textbox'
+    | 'timer'
+    | 'toolbar'
+    | 'tooltip'
+    | 'tree'
+    | 'treegrid'
+    | 'treeitem'
     | (string & {})
 
   export interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
@@ -590,7 +590,7 @@ export namespace JSX {
     // Standard HTML Attributes
     accessKey?: string | undefined
     className?: string | undefined
-    contentEditable?: Booleanish | "inherit" | undefined
+    contentEditable?: Booleanish | 'inherit' | undefined
     contextMenu?: string | undefined
     dir?: string | undefined
     draggable?: Booleanish | undefined
@@ -603,7 +603,7 @@ export namespace JSX {
     style?: CSSProperties | undefined
     tabIndex?: number | undefined
     title?: string | undefined
-    translate?: "yes" | "no" | undefined
+    translate?: 'yes' | 'no' | undefined
 
     // Unknown
     radioGroup?: string | undefined // <command>
@@ -633,16 +633,14 @@ export namespace JSX {
     itemRef?: string | undefined
     results?: number | undefined
     security?: string | undefined
-    unselectable?: "on" | "off" | undefined
+    unselectable?: 'on' | 'off' | undefined
 
     // Living Standard
     /**
-     * Hints at the type of data that might be entered by the user while editing the element or its contents
      * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
      */
-    inputMode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search" | undefined
+    inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined
     /**
-     * Specify that a standard HTML element should behave like a defined custom built-in element
      * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
      */
     is?: string | undefined
@@ -661,7 +659,7 @@ export namespace JSX {
     autoComplete?: string | undefined
     autoFocus?: boolean | undefined
     autoPlay?: boolean | undefined
-    capture?: boolean | "user" | "environment" | undefined
+    capture?: boolean | 'user' | 'environment' | undefined
     cellPadding?: number | string | undefined
     cellSpacing?: number | string | undefined
     charSet?: string | undefined
@@ -759,17 +757,17 @@ export namespace JSX {
   }
 
   type HTMLAttributeReferrerPolicy =
-    | ""
-    | "no-referrer"
-    | "no-referrer-when-downgrade"
-    | "origin"
-    | "origin-when-cross-origin"
-    | "same-origin"
-    | "strict-origin"
-    | "strict-origin-when-cross-origin"
-    | "unsafe-url"
+    | ''
+    | 'no-referrer'
+    | 'no-referrer-when-downgrade'
+    | 'origin'
+    | 'origin-when-cross-origin'
+    | 'same-origin'
+    | 'strict-origin'
+    | 'strict-origin-when-cross-origin'
+    | 'unsafe-url'
 
-  type HTMLAttributeAnchorTarget = "_self" | "_blank" | "_parent" | "_top" | (string & {})
+  type HTMLAttributeAnchorTarget = '_self' | '_blank' | '_parent' | '_top' | (string & {})
 
   export interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
     download?: any
@@ -817,7 +815,7 @@ export namespace JSX {
     formNoValidate?: boolean | undefined
     formTarget?: string | undefined
     name?: string | undefined
-    type?: "submit" | "reset" | "button" | undefined
+    type?: 'submit' | 'reset' | 'button' | undefined
     value?: string | ReadonlyArray<string> | number | undefined
   }
 
@@ -841,7 +839,7 @@ export namespace JSX {
 
   export interface DetailsHTMLAttributes<T> extends HTMLAttributes<T> {
     open?: boolean | undefined
-    onToggle?: ZagEventHandler<T> | undefined
+    onToggle?: DestylerEventHandler<T> | undefined
   }
 
   export interface DelHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -850,8 +848,8 @@ export namespace JSX {
   }
 
   export interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
-    onCancel?: ZagEventHandler<T> | undefined
-    onClose?: ZagEventHandler<T> | undefined
+    onCancel?: DestylerEventHandler<T> | undefined
+    onClose?: DestylerEventHandler<T> | undefined
     open?: boolean | undefined
   }
 
@@ -890,7 +888,7 @@ export namespace JSX {
     /** @deprecated */
     frameBorder?: number | string | undefined
     height?: number | string | undefined
-    loading?: "eager" | "lazy" | undefined
+    loading?: 'eager' | 'lazy' | undefined
     /** @deprecated */
     marginHeight?: number | undefined
     /** @deprecated */
@@ -908,10 +906,10 @@ export namespace JSX {
 
   export interface ImgHTMLAttributes<T> extends HTMLAttributes<T> {
     alt?: string | undefined
-    crossOrigin?: "anonymous" | "use-credentials" | "" | undefined
-    decoding?: "async" | "auto" | "sync" | undefined
+    crossOrigin?: 'anonymous' | 'use-credentials' | '' | undefined
+    decoding?: 'async' | 'auto' | 'sync' | undefined
     height?: number | string | undefined
-    loading?: "eager" | "lazy" | undefined
+    loading?: 'eager' | 'lazy' | undefined
     referrerPolicy?: HTMLAttributeReferrerPolicy | undefined
     sizes?: string | undefined
     src?: string | undefined
@@ -926,28 +924,28 @@ export namespace JSX {
   }
 
   type HTMLInputTypeAttribute =
-    | "button"
-    | "checkbox"
-    | "color"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "hidden"
-    | "image"
-    | "month"
-    | "number"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "search"
-    | "submit"
-    | "tel"
-    | "text"
-    | "time"
-    | "url"
-    | "week"
+    | 'button'
+    | 'checkbox'
+    | 'color'
+    | 'date'
+    | 'datetime-local'
+    | 'email'
+    | 'file'
+    | 'hidden'
+    | 'image'
+    | 'month'
+    | 'number'
+    | 'password'
+    | 'radio'
+    | 'range'
+    | 'reset'
+    | 'search'
+    | 'submit'
+    | 'tel'
+    | 'text'
+    | 'time'
+    | 'url'
+    | 'week'
     | (string & {})
 
   export interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -955,11 +953,11 @@ export namespace JSX {
     alt?: string | undefined
     autoComplete?: string | undefined
     autoFocus?: boolean | undefined
-    capture?: boolean | "user" | "environment" | undefined // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
+    capture?: boolean | 'user' | 'environment' | undefined // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
     checked?: boolean | undefined
     crossOrigin?: string | undefined
     disabled?: boolean | undefined
-    enterKeyHint?: "enter" | "done" | "go" | "next" | "previous" | "search" | "send" | undefined
+    enterKeyHint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send' | undefined
     form?: string | undefined
     formAction?: string | undefined
     formEncType?: string | undefined
@@ -1081,7 +1079,7 @@ export namespace JSX {
   export interface OlHTMLAttributes<T> extends HTMLAttributes<T> {
     reversed?: boolean | undefined
     start?: number | undefined
-    type?: "1" | "a" | "A" | "i" | "I" | undefined
+    type?: '1' | 'a' | 'A' | 'i' | 'I' | undefined
   }
 
   export interface OptgroupHTMLAttributes<T> extends HTMLAttributes<T> {
@@ -1161,13 +1159,13 @@ export namespace JSX {
   }
 
   export interface TableHTMLAttributes<T> extends HTMLAttributes<T> {
-    align?: "left" | "center" | "right" | undefined
+    align?: 'left' | 'center' | 'right' | undefined
     bgcolor?: string | undefined
     border?: number | undefined
     cellPadding?: number | string | undefined
     cellSpacing?: number | string | undefined
     frame?: boolean | undefined
-    rules?: "none" | "groups" | "rows" | "columns" | "all" | undefined
+    rules?: 'none' | 'groups' | 'rows' | 'columns' | 'all' | undefined
     summary?: string | undefined
     width?: number | string | undefined
   }
@@ -1193,7 +1191,7 @@ export namespace JSX {
   }
 
   export interface TdHTMLAttributes<T> extends HTMLAttributes<T> {
-    align?: "left" | "center" | "right" | "justify" | "char" | undefined
+    align?: 'left' | 'center' | 'right' | 'justify' | 'char' | undefined
     colSpan?: number | undefined
     headers?: string | undefined
     rowSpan?: number | undefined
@@ -1201,11 +1199,11 @@ export namespace JSX {
     abbr?: string | undefined
     height?: number | string | undefined
     width?: number | string | undefined
-    valign?: "top" | "middle" | "bottom" | "baseline" | undefined
+    valign?: 'top' | 'middle' | 'bottom' | 'baseline' | undefined
   }
 
   export interface ThHTMLAttributes<T> extends HTMLAttributes<T> {
-    align?: "left" | "center" | "right" | "justify" | "char" | undefined
+    align?: 'left' | 'center' | 'right' | 'justify' | 'char' | undefined
     colSpan?: number | undefined
     headers?: string | undefined
     rowSpan?: number | undefined

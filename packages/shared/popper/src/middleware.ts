@@ -1,9 +1,5 @@
 import type { Coords, Middleware } from '@floating-ui/dom'
 
-/* -----------------------------------------------------------------------------
- * Shared middleware utils
- * ----------------------------------------------------------------------------- */
-
 const toVar = (value: string) => ({ variable: value, reference: `var(${value})` })
 
 export const cssVars = {
@@ -14,22 +10,18 @@ export const cssVars = {
   arrowOffset: toVar('--arrow-offset'),
 }
 
-/* -----------------------------------------------------------------------------
- * Transform Origin Middleware
- * ----------------------------------------------------------------------------- */
-
 function getTransformOrigin(arrow?: Partial<Coords>) {
   return {
-    "top": 'bottom center',
+    'top': 'bottom center',
     'top-start': arrow ? `${arrow.x}px bottom` : 'left bottom',
     'top-end': arrow ? `${arrow.x}px bottom` : 'right bottom',
-    "bottom": 'top center',
+    'bottom': 'top center',
     'bottom-start': arrow ? `${arrow.x}px top` : 'top left',
     'bottom-end': arrow ? `${arrow.x}px top` : 'top right',
-    "left": 'right center',
+    'left': 'right center',
     'left-start': arrow ? `right ${arrow.y}px` : 'right top',
     'left-end': arrow ? `right ${arrow.y}px` : 'right bottom',
-    "right": 'left center',
+    'right': 'left center',
     'right-start': arrow ? `left ${arrow.y}px` : 'left top',
     'right-end': arrow ? `left ${arrow.y}px` : 'left bottom',
   }
@@ -49,10 +41,6 @@ export const transformOrigin: Middleware = {
     }
   },
 }
-
-/* -----------------------------------------------------------------------------
- * Arrow Middleware
- * ----------------------------------------------------------------------------- */
 
 interface ArrowOptions { element: HTMLElement }
 

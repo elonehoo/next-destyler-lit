@@ -99,7 +99,7 @@ export function defineDomHelpers<T>(helpers: T) {
       const win = dom.getWin(ctx)
       return function emit(evt: string, detail: Record<string, any>, options?: EventInit) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
-        const eventName = `zag:${evt}`
+        const eventName = `destyler:${evt}`
         const init: CustomEventInit = { bubbles, cancelable, composed, detail }
         const event = new win.CustomEvent(eventName, init)
         target.dispatchEvent(event)
@@ -107,7 +107,7 @@ export function defineDomHelpers<T>(helpers: T) {
     },
     createListener: (target: HTMLElement) => {
       return function listen<T = any>(evt: string, handler: (e: CustomEvent<T>) => void) {
-        const eventName = `zag:${evt}`
+        const eventName = `destyler:${evt}`
         const listener: any = (e: CustomEvent) => handler(e)
         target.addEventListener(eventName, listener)
         return () => target.removeEventListener(eventName, listener)

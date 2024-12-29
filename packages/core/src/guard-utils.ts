@@ -6,10 +6,6 @@ import { isGuardHelper } from './utils'
 
 const Truthy = () => true
 
-/* -----------------------------------------------------------------------------
- * The following functions are used to determine a guard's truthiness
- * ----------------------------------------------------------------------------- */
-
 function exec<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   guardMap: Dict,
   ctx: TContext,
@@ -26,10 +22,6 @@ function exec<TContext extends Dict, TState extends S.StateSchema, TEvent extend
     return guard.predicate(guardMap)(ctx, event, meta)
   }
 }
-
-/* -----------------------------------------------------------------------------
- * Guard helpers (for combining guards)
- * ----------------------------------------------------------------------------- */
 
 function or<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   ...conditions: Array<S.Guard<TContext, TState, TEvent>>
@@ -67,10 +59,6 @@ function stateIn<TContext extends Dict, TState extends S.StateSchema, TEvent ext
 
 export const guards = { or, and, not, stateIn }
 
-/* -----------------------------------------------------------------------------
- * Action guard helper. Used to determie the action to be taken
- * ----------------------------------------------------------------------------- */
-
 export function choose<
   TContext extends Dict,
   TState extends S.StateSchema,
@@ -86,10 +74,6 @@ export function choose<
       })?.actions,
   }
 }
-
-/* -----------------------------------------------------------------------------
- * Function to determine the guard to be used
- * ----------------------------------------------------------------------------- */
 
 export function determineGuardFn<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   guard: S.Guard<TContext, TState, TEvent> | undefined,
@@ -109,10 +93,6 @@ export function determineGuardFn<TContext extends Dict, TState extends S.StateSc
     return guard?.(context, event, meta)
   }
 }
-
-/* -----------------------------------------------------------------------------
- * Function to determine the actions to be taken
- * ----------------------------------------------------------------------------- */
 
 export function determineActionsFn<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   values: S.Actions<TContext, TState, TEvent> | undefined,

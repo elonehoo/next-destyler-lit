@@ -1,10 +1,10 @@
-import { getDocument, getWindow } from "./get-element"
+import { getDocument, getWindow } from './get-element'
 
-type BaseContext = {
+interface BaseContext {
   getRootNode?: () => Document | ShadowRoot | Node
 }
 
-type BaseDetails = {
+interface BaseDetails {
   [event: string]: {
     [key: string]: any
   }
@@ -43,7 +43,7 @@ export function defineHelpers<T>(rest: T) {
     ): CustomEventEmitter<EventMap> {
       return function emit(evt, detail, options) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
-        const eventName = `zag:${String(evt)}`
+        const eventName = `destyler:${String(evt)}`
 
         const init: CustomEventInit = {
           bubbles,
@@ -54,14 +54,14 @@ export function defineHelpers<T>(rest: T) {
 
         const win = dom.getWin(ctx)
         const event = new win.CustomEvent(eventName, init)
-        const node = typeof target === "function" ? target() : target
+        const node = typeof target === 'function' ? target() : target
         node.dispatchEvent(event)
       }
     },
     createListener<EventMap extends BaseDetails>(target: Callable<HTMLElement>): CustomEventListener<EventMap> {
       return function on(evt, listener) {
-        const eventName = `zag:${String(evt)}`
-        const node = typeof target === "function" ? target() : target
+        const eventName = `destyler:${String(evt)}`
+        const node = typeof target === 'function' ? target() : target
         node.addEventListener(eventName, listener as EventListener)
         return function off() {
           return node.removeEventListener(eventName, listener as EventListener)

@@ -25,10 +25,6 @@ export function getPlacement(
 
   const options = Object.assign({}, defaultOptions, opts)
 
-  /* -----------------------------------------------------------------------------
-   * The middleware stack
-   * ----------------------------------------------------------------------------- */
-
   const arrowEl = floating.querySelector<HTMLElement>('[data-part=arrow]')
   const middleware: Middleware[] = []
 
@@ -95,10 +91,6 @@ export function getPlacement(
       },
     }),
   )
-
-  /* -----------------------------------------------------------------------------
-   * The actual positioning function
-   * ----------------------------------------------------------------------------- */
 
   function compute(config: Omit<ComputePositionConfig, 'platform'> = {}) {
     if (!reference || !floating)
