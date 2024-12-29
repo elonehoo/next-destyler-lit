@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@destyler/accordion": "workspace:*",
+    "@destyler/checkbox": "workspace:*",
     "@destyler/react": "workspace:*"
   },
   "devDependencies": {

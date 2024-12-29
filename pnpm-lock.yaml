@@ -68,6 +68,9 @@ importers:
       '@destyler/accordion':
         specifier: workspace:*
         version: link:../../packages/components/accordion
+      '@destyler/checkbox':
+        specifier: workspace:*
+        version: link:../../packages/components/checkbox
       '@destyler/react':
         specifier: workspace:*
         version: link:../../packages/frameworks/react
@@ -99,6 +102,9 @@ importers:
       '@destyler/accordion':
         specifier: workspace:*
         version: link:../../packages/components/accordion
+      '@destyler/checkbox':
+        specifier: workspace:*
+        version: link:../../packages/components/checkbox
       '@destyler/vue':
         specifier: workspace:*
         version: link:../../packages/frameworks/vue
@@ -131,6 +137,25 @@ importers:
       '@destyler/dom':
         specifier: workspace:*
         version: link:../../dom/dom
+      '@destyler/utils':
+        specifier: workspace:*
+        version: link:../../utils
+
+  packages/components/checkbox:
+    dependencies:
+      '@destyler/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@destyler/types':
+        specifier: workspace:*
+        version: link:../../types
+    devDependencies:
+      '@destyler/dom':
+        specifier: workspace:*
+        version: link:../../dom/dom
+      '@destyler/form-utils':
+        specifier: workspace:*
+        version: link:../../shared/form-utils
       '@destyler/utils':
         specifier: workspace:*
         version: link:../../utils

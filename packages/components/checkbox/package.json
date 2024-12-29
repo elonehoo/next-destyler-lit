@@ -1,5 +1,5 @@
 {
-  "name": "@destyler/accordion",
+  "name": "@destyler/checkbox",
   "type": "module",
   "version": "0.0.6",
   "author": "Elone Hoo <elonehoo@gmail.com>",
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@destyler/dom": "workspace:*",
+    "@destyler/form-utils": "workspace:*",
     "@destyler/utils": "workspace:*"
   }
 }

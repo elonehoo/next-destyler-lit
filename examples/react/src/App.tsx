@@ -1,39 +1,11 @@
-import * as accordion from '@destyler/accordion'
-import { normalizeProps, useMachine } from '@destyler/react'
-import { useId } from 'react'
+import Accordion from './components/Accordion'
+import Checkbox from './components/Checkbox'
 
 function App() {
-  const [state, send] = useMachine(
-    accordion.machine({
-      id: useId(),
-    }),
-  )
-
-  const api = accordion.connect(state, send, normalizeProps)
-
-  const accordionData = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'contact', label: 'Contact' },
-  ]
   return (
     <>
-      <div {...api.rootProps}>
-        {accordionData.map(item => (
-          <div key={item.id} {...api.getItemProps({ value: item.id })}>
-            <button data-testid={`${item.id}:trigger`} {...api.getTriggerProps({ value: item.id })}>
-              {item.label}
-            </button>
-            <div data-testid={`${item.id}:content`} {...api.getContentProps({ value: item.id })}>
-              this is
-              {' '}
-              { item.id }
-              {' '}
-              { item.label }
-            </div>
-          </div>
-        ))}
-      </div>
+      <Accordion />
+      <Checkbox />
     </>
   )
 }
