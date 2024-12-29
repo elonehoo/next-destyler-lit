@@ -1,6 +1,6 @@
-import type { Middleware, VirtualElement } from '@floating-ui/dom'
-import type { PositioningOptions } from './types'
-import { noop, pipe } from '@destyler/utils'
+import type { ComputePositionConfig, Middleware, Placement, VirtualElement } from '@floating-ui/dom'
+import type { BasePlacement, PositioningOptions } from './types'
+import { callAll } from '@destyler/utils'
 import { arrow, computePosition, flip, offset, shift, size } from '@floating-ui/dom'
 import { autoUpdate } from './auto-update'
 import { shiftArrow, transformOrigin } from './middleware'
@@ -18,24 +18,26 @@ const defaultOptions: PositioningOptions = {
 export function getPlacement(
   reference: HTMLElement | VirtualElement | null,
   floating: HTMLElement | null,
-  options: PositioningOptions = {},
+  opts: PositioningOptions = {},
 ) {
-  if (reference == null || floating == null)
-    return noop
+  if (!floating || !reference)
+    return
 
-  options = Object.assign({}, defaultOptions, options)
+  const options = Object.assign({}, defaultOptions, opts)
 
   /* -----------------------------------------------------------------------------
    * The middleware stack
    * ----------------------------------------------------------------------------- */
 
-  const middleware: Middleware[] = [transformOrigin]
   const arrowEl = floating.querySelector<HTMLElement>('[data-part=arrow]')
+  const middleware: Middleware[] = []
+
+  const boundary = typeof options.boundary === 'function' ? options.boundary() : options.boundary
 
   if (options.flip) {
     middleware.push(
       flip({
-        boundary: options.boundary,
+        boundary,
         padding: options.overflowPadding,
       }),
     )
@@ -51,7 +53,7 @@ export function getPlacement(
 
   middleware.push(
     shift({
-      boundary: options.boundary,
+      boundary,
       crossAxis: options.overlap,
       padding: options.overflowPadding,
     }),
@@ -65,37 +67,41 @@ export function getPlacement(
     )
   }
 
-  if (options.sameWidth || options.fitViewport) {
-    middleware.push(
-      size({
-        padding: options.overflowPadding,
-        apply(data) {
-          const { reference, height, width } = data
+  middleware.push(transformOrigin)
 
-          if (options.sameWidth) {
-            Object.assign(floating.style, {
-              width: `${reference.width}px`,
-              minWidth: 'unset',
-            })
-          }
+  middleware.push(
+    size({
+      padding: options.overflowPadding,
+      apply({ rects, availableHeight, availableWidth }) {
+        const referenceWidth = Math.round(rects.reference.width)
 
-          if (options.fitViewport) {
-            Object.assign(floating.style, {
-              maxWidth: `${width}px`,
-              maxHeight: `${height}px`,
-            })
-          }
-        },
-      }),
-    )
-  }
+        floating.style.setProperty('--reference-width', `${referenceWidth}px`)
+        floating.style.setProperty('--available-width', `${availableWidth}px`)
+        floating.style.setProperty('--available-height', `${availableHeight}px`)
+
+        if (options.sameWidth) {
+          Object.assign(floating.style, {
+            width: `${referenceWidth}px`,
+            minWidth: 'unset',
+          })
+        }
+
+        if (options.fitViewport) {
+          Object.assign(floating.style, {
+            maxWidth: `${availableWidth}px`,
+            maxHeight: `${availableHeight}px`,
+          })
+        }
+      },
+    }),
+  )
 
   /* -----------------------------------------------------------------------------
    * The actual positioning function
    * ----------------------------------------------------------------------------- */
 
-  function compute() {
-    if (reference == null || floating == null)
+  function compute(config: Omit<ComputePositionConfig, 'platform'> = {}) {
+    if (!reference || !floating)
       return
     const { placement, strategy } = options
 
@@ -103,30 +109,30 @@ export function getPlacement(
       placement,
       middleware,
       strategy,
+      ...config,
+    }).then((data) => {
+      const x = Math.round(data.x)
+      const y = Math.round(data.y)
+
+      Object.assign(floating.style, {
+        position: data.strategy,
+        top: '0',
+        left: '0',
+        transform: `translate3d(${x}px, ${y}px, 0)`,
+      })
+
+      options.onComplete?.({ ...data, compute })
     })
-      .then((data) => {
-        const x = Math.round(data.x)
-        const y = Math.round(data.y)
-
-        Object.assign(floating.style, {
-          position: data.strategy,
-          top: '0',
-          left: '0',
-          transform: `translate3d(${x}px, ${y}px, 0)`,
-        })
-
-        return data
-      })
-      .then((data) => {
-        options.onComplete?.(data)
-      })
   }
 
   compute()
 
-  // prettier-ignore
-  return pipe(
-    autoUpdate(reference, floating, compute, options.listeners),
-    options.onCleanup ?? noop,
+  return callAll(
+    options.listeners ? autoUpdate(reference, floating, compute, options.listeners) : undefined,
+    options.onCleanup,
   )
+}
+
+export function getBasePlacement(placement: Placement): BasePlacement {
+  return placement.split('-')[0] as BasePlacement
 }

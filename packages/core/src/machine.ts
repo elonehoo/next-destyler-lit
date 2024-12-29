@@ -1,14 +1,15 @@
-import type { Dict, StateMachine as S, VoidFunction, Writable } from './types'
-import { cast, clear, invariant, isArray, isObject, isString, noop, runIfFn, uuid, warn } from '@destyler/utils'
+// @ts-nocheck wip type error
+
+import type { Dict, StateMachine as S, VoidFunction, Writable } from './types';
+import { ref, snapshot, subscribe } from '@destyler/store'
+import { cast, clear, invariant, isArray, isDev, isObject, isString, noop, runIfFn, uuid, warn } from '@destyler/utils'
 import { klona } from 'klona/json'
-import { derive, subscribeKey, underive } from 'valtio/utils'
-import { ref, snapshot, subscribe } from 'valtio/vanilla'
 import { createProxy } from './create-proxy'
 import { determineDelayFn } from './delay-utils'
 import { determineActionsFn, determineGuardFn } from './guard-utils'
-import { determineTransitionFn, toTransition } from './transition-utils'
+import { determineTransitionFn } from './transition-utils'
 import { ActionTypes, MachineStatus, MachineType } from './types'
-import { toArray, toEvent } from './utils'
+import { subscribeKey, toArray, toEvent } from './utils'
 
 export class Machine<
   TContext extends Dict,
@@ -29,6 +30,7 @@ export class Machine<
 
   // state update listeners the user can opt-in for
   private stateListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
+  private contextListeners = new Set<S.ContextListener<TContext>>()
   private eventListeners = new Set<S.EventListener<TEvent>>()
   private doneListeners = new Set<S.StateListener<TContext, TState, TEvent>>()
   private contextWatchers = new Set<VoidFunction>()
@@ -36,27 +38,28 @@ export class Machine<
   // Cleanup functions (for `subscribe`)
   private removeStateListener: VoidFunction = noop
   private removeEventListener: VoidFunction = noop
+  private removeContextListener: VoidFunction = noop
 
   // For Parent <==> Spawned Actor relationship
   private parent?: AnyMachine
   private children = new Map<string, AnyMachine>()
 
   // A map of guard, action, delay implementations
-  private guardMap: S.GuardMap<TContext, TEvent>
+  private guardMap: S.GuardMap<TContext, TState, TEvent>
   private actionMap: S.ActionMap<TContext, TState, TEvent>
   private delayMap: S.DelayMap<TContext, TEvent>
   private activityMap: S.ActivityMap<TContext, TState, TEvent>
   private sync: boolean
   public options: S.MachineOptions<TContext, TState, TEvent>
+  public config: S.MachineConfig<TContext, TState, TEvent>
 
   // Let's get started!
-  constructor(
-    public config: S.MachineConfig<TContext, TState, TEvent>,
-    options?: S.MachineOptions<TContext, TState, TEvent>,
-  ) {
-    // deep clone the config
+  constructor(config: S.MachineConfig<TContext, TState, TEvent>, options?: S.MachineOptions<TContext, TState, TEvent>) {
+    // clone the config and options
+    this.config = klona(config)
     this.options = klona(options ?? {})
-    this.id = config.id ?? `machine-${uuid()}`
+
+    this.id = this.config.id ?? `machine-${uuid()}`
 
     // maps
     this.guardMap = this.options?.guards ?? {}
@@ -66,17 +69,20 @@ export class Machine<
     this.sync = this.options?.sync ?? false
 
     // create mutatable state
-    this.state = createProxy(klona(config))
-    this.setupComputed()
+    this.state = createProxy(this.config)
 
     // created actions
     const event = toEvent<TEvent>(ActionTypes.Created)
-    this.executeActions(config?.created, event)
+    this.executeActions(this.config?.created, event)
   }
 
   // immutable state value
   private get stateSnapshot(): S.State<TContext, TState, TEvent> {
     return cast(snapshot(this.state))
+  }
+
+  public getState(): S.State<TContext, TState, TEvent> {
+    return klona(this.stateSnapshot)
   }
 
   // immutable context value
@@ -92,24 +98,8 @@ export class Machine<
     }
 
     this.status = MachineStatus.Running
-    const event = toEvent<TEvent>(ActionTypes.Init)
 
-    if (init) {
-      const resolved = isObject(init) ? init : { context: this.config.context!, value: init }
-      this.setState(resolved.value)
-      this.setContext(resolved.context as Partial<TContext>)
-    }
-
-    // start transition definition
-    const transition = {
-      target: init ? undefined : this.config.initial,
-    }
-
-    const info = this.getNextStateInfo(transition, event)
-    info.target = cast(info.target || transition.target)
-    this.initialState = info
-    this.performStateChangeEffects(info.target, info, event)
-
+    // subscribe to state changes
     this.removeStateListener = subscribe(
       this.state,
       () => {
@@ -121,20 +111,55 @@ export class Machine<
     )
 
     // subscribe to event changes
-    this.removeEventListener = subscribeKey(this.state, 'event', (event) => {
-      if (this.config.onEvent) {
+    this.removeEventListener = subscribeKey(
+      this.state,
+      'event',
+      (event) => {
         this.executeActions(this.config.onEvent, event)
-      }
-      for (const listener of this.eventListeners) {
-        listener(event)
-      }
-    })
+        this.eventListeners.forEach((listener) => {
+          listener(event)
+        })
+      },
+      this.sync,
+    )
+
+    // subscribe to context changes
+    this.removeContextListener = subscribe(
+      this.state.context,
+      () => {
+        this.log('Context:', this.contextSnapshot)
+        this.contextListeners.forEach((listener) => {
+          listener(this.contextSnapshot)
+        })
+      },
+      this.sync || this.options.debug,
+    )
 
     this.setupContextWatchers()
 
     // execute initial actions and activities
     this.executeActivities(toEvent<TEvent>(ActionTypes.Start), toArray(this.config.activities), ActionTypes.Start)
     this.executeActions(this.config.entry, toEvent<TEvent>(ActionTypes.Start))
+
+    // start transition
+    const event = toEvent<TEvent>(ActionTypes.Init)
+
+    const target = isObject(init) ? init.value : init
+    const context = isObject(init) ? init.context : undefined
+
+    if (context) {
+      this.setContext(context as Partial<TContext>)
+    }
+
+    // start transition definition
+    const transition = {
+      target: target ?? this.config.initial,
+    }
+
+    const next = this.getNextStateInfo(transition, event)
+    this.initialState = next
+
+    this.performStateChangeEffects(this.state.value!, next, event)
 
     return this
   }
@@ -149,33 +174,20 @@ export class Machine<
     }
   }
 
-  private setupComputed = () => {
-    // convert computed properties to valtio getters format
-    const computed = cast<S.TComputedContext<TContext>>(this.config.computed ?? {})
-    const deriveFns = Object.fromEntries(
-      Object.entries(computed).map(([key, fn]: any) => [key, (get: any) => fn(get(this.state.context))]),
-    )
-
-    // attach computed properties to the state's context
-    derive(deriveFns, { proxy: this.state.context })
-  }
-
-  private detachComputed = () => {
-    underive(this.state.context, { delete: true })
-  }
-
   // Stops the interpreted machine
   stop = () => {
     // No need to call if already stopped
     if (this.status === MachineStatus.Stopped)
       return
 
-    this.setState(null)
-    this.setEvent(ActionTypes.Stop)
+    // exit current state
+    this.performExitEffects(this.state.value!, toEvent<TEvent>(ActionTypes.Stop))
 
-    if (this.config.context) {
-      this.setContext(this.config.context as Partial<TContext>)
-    }
+    // execute root stop or exit actions
+    this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
+
+    this.setState('')
+    this.setEvent(ActionTypes.Stop)
 
     // cleanups
     this.stopStateListeners()
@@ -184,12 +196,7 @@ export class Machine<
     this.stopDelayedEvents()
     this.stopContextWatchers()
     this.stopEventListeners()
-
-    // cleanup `derive` subscriptions that was attached to the context
-    this.detachComputed()
-
-    // execute stop or exit actions
-    this.executeActions(this.config.exit, toEvent<TEvent>(ActionTypes.Stop))
+    this.stopContextListeners()
 
     this.status = MachineStatus.Stopped
     return this
@@ -198,6 +205,11 @@ export class Machine<
   private stopEventListeners = () => {
     this.eventListeners.clear()
     this.removeEventListener()
+  }
+
+  private stopContextListeners = () => {
+    this.contextListeners.clear()
+    this.removeContextListener()
   }
 
   private stopStateListeners = () => {
@@ -322,14 +334,15 @@ export class Machine<
   /**
    * To used within side effects for React or Vue to update context
    */
-  public setContext = (context: Partial<Writable<TContext>>) => {
+  public setContext = (context: Partial<Writable<TContext>> | undefined) => {
+    if (!context)
+      return
     for (const key in context) {
-      this.state.context[<keyof TContext>key] = (context as any)[key]!
+      this.state.context[<keyof TContext>key] = context[key]!
     }
   }
 
   public withContext = (context: Partial<Writable<TContext>>) => {
-    this.detachComputed()
     const newContext = { ...this.config.context, ...context } as TContext
     return new Machine({ ...this.config, context: newContext }, this.options)
   }
@@ -348,15 +361,27 @@ export class Machine<
     transitions: S.Transitions<TContext, TState, TEvent>,
     event: TEvent,
   ): S.StateInfo<TContext, TState, TEvent> => {
+    // pick transition
     const transition = this.determineTransition(transitions, event)
-    const target = transition?.target ?? this.state.value
-    const stateNode = this.getStateNode(target)
 
-    return {
+    const isTargetless = !transition?.target
+    const target = transition?.target ?? this.state.value
+    const changed = this.state.value !== target
+
+    const stateNode = this.getStateNode(target)
+    const reenter = !isTargetless && !changed && !transition?.internal
+
+    const info = {
+      reenter,
       transition,
       stateNode,
       target: target!,
+      changed,
     }
+
+    this.log('NextState:', `[${event.type}]`, this.state.value, '---->', info.target)
+
+    return info
   }
 
   private getActionFromDelayedTransition = (transition: S.DelayedTransition<TContext, TState, TEvent>) => {
@@ -371,9 +396,8 @@ export class Machine<
     return {
       entry: () => {
         id = globalThis.setTimeout(() => {
-          const current = this.state.value!
           const next = this.getNextStateInfo(transition, event)
-          this.performStateChangeEffects(current, next, event)
+          this.performStateChangeEffects(this.state.value!, next, event)
         }, delay)
       },
       exit: () => {
@@ -472,12 +496,18 @@ export class Machine<
     }
   }
 
+  private get guardMeta(): S.GuardMeta<TContext, TState, TEvent> {
+    return {
+      state: this.stateSnapshot,
+    }
+  }
+
   /**
    * Function to executes defined actions. It can accept actions as string
    * (referencing `options.actions`) or actual functions.
    */
   private executeActions = (actions: S.Actions<TContext, TState, TEvent> | undefined, event: TEvent) => {
-    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event)
+    const _actions = determineActionsFn(actions, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     for (const action of toArray(_actions)) {
       const fn = isString(action) ? this.actionMap?.[action] : action
       warn(
@@ -506,6 +536,7 @@ export class Machine<
       }
 
       const cleanup = fn(this.state.context, event, this.meta)
+
       if (cleanup) {
         this.addActivityCleanup(state ?? this.state.value, cleanup)
       }
@@ -528,15 +559,16 @@ export class Machine<
     // every: [{ interval: 2000, actions: [...], guard: "isValid" },  { interval: 1000, actions: [...] }]
     if (isArray(every)) {
       // picked = { interval: string | number | <ref>, actions: [...], guard: ... }
-      const picked = toArray(every).find((t) => {
+      const picked = toArray(every).find((transition) => {
         //
-        const determineDelay = determineDelayFn(t.delay, this.delayMap)
-        t.delay = determineDelay(this.contextSnapshot, event)
+        const delayOrFn = transition.delay
+        const determineDelay = determineDelayFn(delayOrFn, this.delayMap)
+        const delay = determineDelay(this.contextSnapshot, event)
 
-        const determineGuard = determineGuardFn(t.guard, this.guardMap)
-        const guard = determineGuard(this.contextSnapshot, event)
+        const determineGuard = determineGuardFn(transition.guard, this.guardMap)
+        const guard = determineGuard(this.contextSnapshot, event, this.guardMeta)
 
-        return guard ?? t.delay
+        return guard ?? delay != null
       })
 
       if (!picked)
@@ -580,21 +612,28 @@ export class Machine<
   }
 
   private setEvent = (event: TEvent | TEvent['type']) => {
+    this.state.previousEvent = this.state.event
     this.state.event = ref(toEvent(event))
   }
 
   private performExitEffects = (current: TState['value'] | undefined, event: TEvent) => {
     const currentState = this.state.value!
+
+    // don't clean up root state, it'll get cleaned up on stop()
+    if (currentState === '')
+      return
+
     const stateNode = current ? this.getStateNode(current) : undefined
 
     // cleanup activities for current state
     this.stopActivities(currentState)
 
     // get explicit exit and implicit "after.exit" actions for current state
-    const _exit = determineActionsFn(stateNode?.exit, this.guardMap)(this.contextSnapshot, event)
+    const _exit = determineActionsFn(stateNode?.exit, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     const exitActions = toArray(_exit)
 
     const afterExitActions = this.delayedEvents.get(currentState)
+
     if (afterExitActions) {
       exitActions.push(...afterExitActions)
     }
@@ -622,7 +661,7 @@ export class Machine<
     }
 
     // get all entry actions
-    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event)
+    const _entry = determineActionsFn(stateNode?.entry, this.guardMap)(this.contextSnapshot, event, this.guardMeta)
     const entryActions = toArray(_entry)
     const afterActions = this.getDelayedEventActions(next)
 
@@ -644,12 +683,12 @@ export class Machine<
   }
 
   private performTransitionEffects = (
-    transition: S.Transitions<TContext, TState, TEvent> | undefined,
+    transitions: S.Transitions<TContext, TState, TEvent> | undefined,
     event: TEvent,
   ) => {
     // execute transition actions
-    const t = this.determineTransition(transition, event)
-    this.executeActions(t?.actions, event)
+    const transition = this.determineTransition(transitions, event)
+    this.executeActions(transition?.actions, event)
   }
 
   /**
@@ -667,28 +706,26 @@ export class Machine<
     // update event
     this.setEvent(event)
 
-    // determine next target
-    next.target = next.target ?? this.state.value ?? undefined
-    const ok = next.target && next.target !== this.state.value
+    const changed = next.changed || next.reenter
 
-    if (ok) {
+    if (changed) {
       this.performExitEffects(current, event)
     }
 
     // execute transition actions
-    this.performTransitionEffects(next?.transition, event)
+    this.performTransitionEffects(next.transition, event)
 
     // go to next state
     this.setState(next.target)
 
-    if (ok) {
+    if (changed) {
       this.performEntryEffects(next.target, event)
     }
   }
 
   private determineTransition = (transition: S.Transitions<TContext, TState, TEvent> | undefined, event: TEvent) => {
     const fn = determineTransitionFn(transition, this.guardMap)
-    return fn?.(this.contextSnapshot, event)
+    return fn?.(this.contextSnapshot, event, this.guardMeta)
   }
 
   /**
@@ -700,6 +737,12 @@ export class Machine<
     }
     const event = toEvent<S.AnyEventObject>(evt)
     this.parent?.send(event)
+  }
+
+  private log = (...args: any[]) => {
+    if (isDev() && this.options.debug) {
+      console.log(...args)
+    }
   }
 
   /**
@@ -724,18 +767,13 @@ export class Machine<
       return
     }
 
-    const transitionConfig: S.Transitions<TContext, TState, TEvent>
-      = (stateNode?.on as any)?.[event.type] ?? (this.config.on as any)?.[event.type]
+    const transitions: S.Transitions<TContext, TState, TEvent>
+      = stateNode?.on?.[event.type] ?? this.config.on?.[event.type]
 
-    const transition = toTransition(transitionConfig, this.state.value)
+    const next = this.getNextStateInfo(transitions, event)
+    this.performStateChangeEffects(this.state.value!, next, event)
 
-    if (!transition)
-      return
-
-    const info = this.getNextStateInfo(transition, event)
-    this.performStateChangeEffects(this.state.value!, info, event)
-
-    return info.stateNode
+    return next.stateNode
   }
 
   subscribe = (listener: S.StateListener<TContext, TState, TEvent>) => {
@@ -763,10 +801,18 @@ export class Machine<
     return this
   }
 
+  public onChange = (listener: S.ContextListener<TContext>) => {
+    this.contextListeners.add(listener)
+    return this
+  }
+
   public onEvent = (listener: S.EventListener<TEvent>) => {
-    listener(this.state.event)
     this.eventListeners.add(listener)
     return this
+  }
+
+  get [Symbol.toStringTag]() {
+    return 'Machine'
   }
 }
 

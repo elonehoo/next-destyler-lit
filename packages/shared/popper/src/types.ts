@@ -1,4 +1,4 @@
-import type { Boundary, ComputePositionReturn, Placement } from '@floating-ui/dom'
+import type { Boundary, ComputePositionConfig, ComputePositionReturn, Placement } from '@floating-ui/dom'
 import type { AutoUpdateOptions } from './auto-update'
 
 export type { Placement }
@@ -44,7 +44,7 @@ export interface PositioningOptions {
   /**
    * The overflow boundary of the reference element
    */
-  boundary?: Boundary
+  boundary?: Boundary | (() => Boundary)
   /**
    * Options to activate auto-update listeners
    */
@@ -52,9 +52,15 @@ export interface PositioningOptions {
   /**
    * Function called when the placement is computed
    */
-  onComplete?: (data: ComputePositionReturn) => void
+  onComplete?: (
+    data: ComputePositionReturn & {
+      compute: (config?: Omit<ComputePositionConfig, "platform">) => void
+    },
+  ) => void
   /**
    * Function called on cleanup of all listeners
    */
   onCleanup?: VoidFunction
 }
+
+export type BasePlacement = 'top' | 'right' | 'bottom' | 'left'

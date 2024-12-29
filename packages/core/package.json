@@ -26,8 +26,10 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "@destyler/utils": "workspace:*",
-    "klona": "^2.0.6",
-    "valtio": "^1.13.2"
+    "@destyler/store": "workspace:*",
+    "klona": "^2.0.6"
+  },
+  "devDependencies": {
+    "@destyler/utils": "workspace:*"
   }
 }

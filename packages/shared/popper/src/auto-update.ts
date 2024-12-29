@@ -1,6 +1,6 @@
 import type { Placement, ReferenceElement } from '@floating-ui/dom'
 import { addDomEvent, isHTMLElement, observeElementRect } from '@destyler/dom'
-import { isBoolean, pipe } from '@destyler/utils'
+import { callAll, isBoolean } from '@destyler/utils'
 import { getOverflowAncestors } from '@floating-ui/dom'
 
 export type { Placement }
@@ -42,13 +42,13 @@ export function autoUpdate(
     if (referenceResize && isHTMLElement(reference)) {
       cleanups.push(observeElementRect(reference, update))
     }
-    cleanups.push(pipe(...ancestors.map((el: any) => addDomEvent(el, 'resize', update))))
+    cleanups.push(callAll(...ancestors.map((el: any) => addDomEvent(el, 'resize', update))))
     return () => cleanups.forEach(fn => fn())
   }
 
   function addScrollListeners() {
-    return pipe(...ancestors.map((el: any) => addDomEvent(el, 'scroll', update, { passive: true })))
+    return callAll(...ancestors.map((el: any) => addDomEvent(el, 'scroll', update, { passive: true })))
   }
 
-  return pipe(addResizeListeners(), addScrollListeners())
+  return callAll(addResizeListeners(), addScrollListeners())
 }

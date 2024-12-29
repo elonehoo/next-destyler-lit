@@ -19,7 +19,7 @@
     "@antfu/eslint-config": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",
-    "jsdom": "^25.0.1",
+    "jsdom": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:",
     "unbuild": "catalog:",

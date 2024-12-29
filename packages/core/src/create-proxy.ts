@@ -1,16 +1,20 @@
-import type { Dict, StateMachine as S } from './types'
+import type { Dict, StateMachine as S } from "./types";
+import { proxy, proxyWithComputed } from '@destyler/store'
 import { cast } from '@destyler/utils'
-import { proxy } from 'valtio/vanilla'
 import { ActionTypes } from './types'
 
-export function createProxy<TContext extends Dict<any>, TState extends S.StateSchema, TEvent extends S.EventObject>(
+export function createProxy<TContext extends Dict, TState extends S.StateSchema, TEvent extends S.EventObject>(
   config: S.MachineConfig<TContext, TState, TEvent>,
 ) {
+  const computedContext: Dict = config.computed ?? cast<S.TComputedContext<TContext>>({})
+  const initialContext = config.context ?? cast<TContext>({})
+
   const state = proxy({
     value: '',
     previousValue: '',
     event: cast<Dict>({}),
-    context: config.context ?? cast<TContext>({}),
+    previousEvent: cast<Dict>({}),
+    context: proxyWithComputed(initialContext, computedContext),
     done: false,
     tags: [] as Array<TState['tags']>,
     hasTag(tag: TState['tags']): boolean {

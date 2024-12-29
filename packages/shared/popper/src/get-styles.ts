@@ -1,25 +1,34 @@
-import { cssVars } from "./middleware"
+import type { Placement } from '@floating-ui/dom'
+import { cssVars } from './middleware'
 
-type Options = {
+interface Options {
   measured: boolean
-  strategy?: "absolute" | "fixed"
+  strategy?: 'absolute' | 'fixed'
+  placement?: Placement
 }
 
 const UNMEASURED_FLOATING_STYLE = {
-  position: "fixed",
+  position: 'fixed',
   top: 0,
   left: 0,
   opacity: 0,
-  transform: "translate3d(0, -200%, 0)",
-  pointerEvents: "none",
-} as const
+  transform: 'translate3d(0, -200%, 0)',
+  pointerEvents: 'none',
+}
+
+const ARROW_FLOATING_STYLE: Record<any, string> = {
+  bottom: 'rotate(45deg)',
+  left: 'rotate(135deg)',
+  top: 'rotate(225deg)',
+  right: 'rotate(315deg)',
+}
 
 export function getPlacementStyles(options: Options) {
-  const { measured, strategy = "absolute" } = options
+  const { measured, strategy = 'absolute', placement = 'bottom' } = options
 
   return {
     arrow: {
-      position: "absolute",
+      position: 'absolute',
       width: cssVars.arrowSize.reference,
       height: cssVars.arrowSize.reference,
       [cssVars.arrowSizeHalf.variable]: `calc(${cssVars.arrowSize.reference} / 2)`,
@@ -28,19 +37,19 @@ export function getPlacementStyles(options: Options) {
     } as const,
 
     innerArrow: {
-      transform: "rotate(45deg)",
+      transform: ARROW_FLOATING_STYLE[placement.split('-')[0]],
       background: cssVars.arrowBg.reference,
-      top: "0",
-      left: "0",
-      width: "100%",
-      height: "100%",
-      position: "absolute",
-      zIndex: "inherit",
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      position: 'absolute',
+      zIndex: 'inherit',
     } as const,
 
     floating: {
       position: strategy,
-      minWidth: "max-content",
+      minWidth: 'max-content',
       ...(!measured && UNMEASURED_FLOATING_STYLE),
     } as const,
   }

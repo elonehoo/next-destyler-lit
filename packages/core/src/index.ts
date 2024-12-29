@@ -1,5 +1,6 @@
-export { choose, guards } from './guard-utils'
-export * from './machine'
-export { mergeProps } from './merge-props'
-export type { StateMachine } from './types'
-export { proxy, ref, snapshot, subscribe } from 'valtio/vanilla'
+export { choose, guards } from "./guard-utils"
+export * from "./machine"
+export { mergeProps } from "./merge-props"
+export type { ContextFrom, EventFrom, StateFrom } from "./type-utils"
+export type { StateMachine } from "./types"
+export { proxy, ref, snapshot, subscribe } from "@destyler/store"

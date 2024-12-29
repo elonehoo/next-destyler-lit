@@ -1,4 +1,4 @@
-import type { Middleware } from '@floating-ui/dom'
+import type { Coords, Middleware } from '@floating-ui/dom'
 
 /* -----------------------------------------------------------------------------
  * Shared middleware utils
@@ -18,28 +18,34 @@ export const cssVars = {
  * Transform Origin Middleware
  * ----------------------------------------------------------------------------- */
 
-const transforms = {
-  'top': 'bottom center',
-  'top-start': 'bottom left',
-  'top-end': 'bottom right',
-  'bottom': 'top center',
-  'bottom-start': 'top left',
-  'bottom-end': 'top right',
-  'left': 'right center',
-  'left-start': 'right top',
-  'left-end': 'right bottom',
-  'right': 'left center',
-  'right-start': 'left top',
-  'right-end': 'left bottom',
+function getTransformOrigin(arrow?: Partial<Coords>) {
+  return {
+    "top": 'bottom center',
+    'top-start': arrow ? `${arrow.x}px bottom` : 'left bottom',
+    'top-end': arrow ? `${arrow.x}px bottom` : 'right bottom',
+    "bottom": 'top center',
+    'bottom-start': arrow ? `${arrow.x}px top` : 'top left',
+    'bottom-end': arrow ? `${arrow.x}px top` : 'top right',
+    "left": 'right center',
+    'left-start': arrow ? `right ${arrow.y}px` : 'right top',
+    'left-end': arrow ? `right ${arrow.y}px` : 'right bottom',
+    "right": 'left center',
+    'right-start': arrow ? `left ${arrow.y}px` : 'left top',
+    'right-end': arrow ? `left ${arrow.y}px` : 'left bottom',
+  }
 }
 
 export const transformOrigin: Middleware = {
   name: 'transformOrigin',
-  fn({ placement, elements }) {
+  fn({ placement, elements, middlewareData }) {
+    const { arrow } = middlewareData
+    const transformOrigin = getTransformOrigin(arrow)[placement]
+
     const { floating } = elements
-    floating.style.setProperty(cssVars.transformOrigin.variable, transforms[placement])
+    floating.style.setProperty(cssVars.transformOrigin.variable, transformOrigin)
+
     return {
-      data: { transformOrigin: transforms[placement] },
+      data: { transformOrigin },
     }
   },
 }
@@ -50,25 +56,25 @@ export const transformOrigin: Middleware = {
 
 interface ArrowOptions { element: HTMLElement }
 
+type BasePlacement = 'top' | 'bottom' | 'left' | 'right'
+
 export function shiftArrow(opts: ArrowOptions): Middleware {
   return {
     name: 'shiftArrow',
     fn({ placement, middlewareData }) {
       const { element: arrow } = opts
-      const { x, y } = middlewareData.arrow ?? { x: 0, y: 0 }
 
-      const dir = {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-      }[placement.split('-')[0]]!
+      if (middlewareData.arrow) {
+        const { x, y } = middlewareData.arrow
 
-      Object.assign(arrow.style, {
-        top: `${y}px`,
-        left: `${x}px`,
-        [dir]: cssVars.arrowOffset.reference,
-      })
+        const dir = placement.split('-')[0] as BasePlacement
+
+        Object.assign(arrow.style, {
+          left: x != null ? `${x}px` : '',
+          top: y != null ? `${y}px` : '',
+          [dir]: `calc(100% + ${cssVars.arrowOffset.reference})`,
+        })
+      }
 
       return {}
     },
