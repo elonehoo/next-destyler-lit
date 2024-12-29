@@ -1,5 +1,5 @@
-import { expect, it } from 'vitest'
-import { determineDelayFn } from '../src/delay-utils'
+import {expect, it} from 'vitest'
+import { determineDelayFn } from "../src/delay-utils"
 
 const context = {
   values: [],

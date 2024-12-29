@@ -1,0 +1,66 @@
+import type { StateMachine as S } from '@destyler/core'
+import type { CommonProperties, Context, DirectionProperty, RequiredBy } from '@destyler/types'
+
+type ElementIds = Partial<{
+  root: string
+  item: (value: string) => string
+  content: (value: string) => string
+  trigger: (value: string) => string
+}>
+
+type PublicContext = DirectionProperty &
+  CommonProperties & {
+    /**
+     * The ids of the elements in the accordion. Useful for composition.
+     */
+    ids?: ElementIds
+    /**
+     * Whether multple accordion items can be open at the same time.
+     * @default false
+     */
+    multiple?: boolean
+    /**
+     * Whether an accordion item can be collapsed after it has been opened.
+     * @default false
+     */
+    collapsible?: boolean
+    /**
+     * The `id` of the accordion item that is currently being opened.
+     */
+    value: string | string[] | null
+    /**
+     * Whether the accordion items are disabled
+     */
+    disabled?: boolean
+    /**
+     * The callback fired when the state of opened/closed accordion items changes.
+     */
+    onChange?: (details: { value: string | string[] | null }) => void
+  }
+
+export type UserDefinedContext = RequiredBy<PublicContext, 'id'>
+
+type ComputedContext = Readonly<{}>
+
+type PrivateContext = Context<{
+  /**
+   * @internal
+   * The `id` of the focused accordion item.
+   */
+  focusedValue: string | null
+}>
+
+export type MachineContext = PublicContext & PrivateContext & ComputedContext
+
+export interface MachineState {
+  value: 'unknown' | 'idle' | 'focused'
+}
+
+export type State = S.State<MachineContext, MachineState>
+
+export type Send = S.Send<S.AnyEventObject>
+
+export interface ItemProps {
+  value: string
+  disabled?: boolean
+}

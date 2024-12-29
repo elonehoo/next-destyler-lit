@@ -1,5 +1,5 @@
-import { expect, it } from 'vitest'
-import { createMachine } from '../src'
+import { expect,it } from 'vitest'
+import { createMachine } from "../src"
 
 it('should start the service with initial state by default', () => {
   const machine = createMachine<{}, { value: 'foo' | 'bar' }>({

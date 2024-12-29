@@ -15,5 +15,6 @@ export default antfu({
     'ts/no-this-alias': 'off',
     'ts/no-empty-object-type': 'off',
     'regexp/no-unused-capturing-group': 'off',
+    'ts/no-namespace': 'off',
   },
 })

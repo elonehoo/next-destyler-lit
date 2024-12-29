@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe,expect,it } from 'vitest'
 import { createMachine } from '../src'
 
 describe('machine / smoke test', () => {
