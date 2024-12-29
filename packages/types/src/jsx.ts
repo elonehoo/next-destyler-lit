@@ -24,11 +24,11 @@ export namespace JSX {
     defaultPrevented: boolean
     eventPhase: number
     isTrusted: boolean
-    preventDefault(): void
-    isDefaultPrevented(): boolean
-    stopPropagation(): void
-    isPropagationStopped(): boolean
-    persist(): void
+    preventDefault: () => void
+    isDefaultPrevented: () => boolean
+    stopPropagation: () => void
+    isPropagationStopped: () => boolean
+    persist: () => void
     timeStamp: number
     type: string
   }
@@ -82,13 +82,7 @@ export namespace JSX {
     charCode: number
     ctrlKey: boolean
     code: string
-    /**
-     * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-     */
-    getModifierState(key: string): boolean
-    /**
-     * See the [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#named-key-attribute-values). for possible values
-     */
+    getModifierState: (key: string) => boolean
     key: string
     /** @deprecated */
     keyCode: number
@@ -108,10 +102,7 @@ export namespace JSX {
     clientX: number
     clientY: number
     ctrlKey: boolean
-    /**
-     * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-     */
-    getModifierState(key: string): boolean
+    getModifierState: (key: string) => boolean
     metaKey: boolean
     movementX: number
     movementY: number
@@ -127,10 +118,7 @@ export namespace JSX {
     altKey: boolean
     changedTouches: TouchList
     ctrlKey: boolean
-    /**
-     * See [DOM Level 3 Events spec](https://www.w3.org/TR/uievents-key/#keys-modifier). for a list of valid (case-sensitive) arguments to this method.
-     */
-    getModifierState(key: string): boolean
+    getModifierState: (key: string) => boolean
     metaKey: boolean
     shiftKey: boolean
     targetTouches: TouchList
@@ -170,7 +158,7 @@ export namespace JSX {
   // Event Handler Types
   // ----------------------------------------------------------------------
 
-  type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack(event: E): void }['bivarianceHack']
+  type EventHandler<E extends SyntheticEvent<any>> = { bivarianceHack: (event: E) => void }['bivarianceHack']
 
   type DestylerEventHandler<T = Element> = EventHandler<SyntheticEvent<T>>
 
