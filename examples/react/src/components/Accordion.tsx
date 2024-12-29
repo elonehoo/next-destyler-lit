@@ -21,10 +21,10 @@ function Accordion() {
       <div {...api.rootProps}>
         {accordionData.map(item => (
           <div key={item.id} {...api.getItemProps({ value: item.id })}>
-            <button data-testid={`${item.id}:trigger`} {...api.getTriggerProps({ value: item.id })}>
+            <button {...api.getTriggerProps({ value: item.id })}>
               {item.label}
             </button>
-            <div data-testid={`${item.id}:content`} {...api.getContentProps({ value: item.id })}>
+            <div {...api.getContentProps({ value: item.id })}>
               this is
               {' '}
               { item.id }
