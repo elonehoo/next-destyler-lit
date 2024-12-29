@@ -1,0 +1,16 @@
+import type { Machine, StateMachine as S } from '@destyler/core'
+import { useSnapshot } from './use-snapshot'
+
+export function useActor<
+  TContext extends Record<string, any>,
+  TState extends S.StateSchema,
+  TEvent extends S.EventObject = S.AnyEventObject,
+>(service: Machine<TContext, TState, TEvent>) {
+  const current = useSnapshot(service.state, {
+    sync: service.options.hookSync,
+  })
+
+  const typedState = current as unknown as S.State<TContext, TState, TEvent>
+
+  return [typedState, service.send] as const
+}

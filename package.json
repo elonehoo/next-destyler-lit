@@ -13,7 +13,11 @@
     "build": "pnpm run --filter \"./packages/**\" -r build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest"
+    "test": "vitest",
+    "vue": "pnpm --filter \"./examples/vue\"",
+    "react": "pnpm --filter \"./examples/react\"",
+    "vue:dev": "pnpm run vue dev",
+    "react:dev": "pnpm run react dev"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",

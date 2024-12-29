@@ -14,15 +14,15 @@ export function isFrame(element: Element): element is HTMLIFrameElement {
   return element.localName === 'iframe'
 }
 
-export function isWithinShadowRoot (node: HTMLElement) {
+export function isWithinShadowRoot(node: HTMLElement) {
   return isShadowRoot(node.getRootNode())
 }
 
 export function getDocument(el: Element | Window | Node | Document | null) {
-  if (isWindow(el)) 
-return el.document
-  if (isDocument(el)) 
-return el
+  if (isWindow(el))
+    return el.document
+  if (isDocument(el))
+    return el
   return el?.ownerDocument ?? document
 }
 
@@ -43,11 +43,11 @@ export function getNodeName(node: HTMLElement | Window | null): string {
 }
 
 export function getEventWindow(event: UIEvent) {
-  if (event.view) 
-return event.view
+  if (event.view)
+    return event.view
   const target = event.currentTarget
-  if (target != null) 
-return getWindow(target as HTMLElement)
+  if (target != null)
+    return getWindow(target as HTMLElement)
   return window
 }
 
@@ -60,8 +60,8 @@ export function getActiveElement(el: HTMLElement): HTMLElement | null {
 
   while (activeElement && activeElement.shadowRoot) {
     const el = activeElement.shadowRoot.activeElement as HTMLElement | null
-    if (el === activeElement) 
-break
+    if (el === activeElement)
+      break
     else activeElement = el
   }
 
@@ -69,33 +69,33 @@ break
 }
 
 export function getActiveDescendant(node: HTMLElement | null): HTMLElement | null {
-  if (!node) 
-return null
+  if (!node)
+    return null
   const id = node.getAttribute('aria-activedescendant')
-  if (!id) 
-return null
+  if (!id)
+    return null
   return getDocument(node).getElementById(id)
 }
 
 export function getParent(el: HTMLElement): HTMLElement {
   const doc = getDocument(el)
-  if (getNodeName(el) === 'html') 
-return el
+  if (getNodeName(el) === 'html')
+    return el
   return el.assignedSlot || el.parentElement || doc.documentElement
 }
 
-interface Ctx {
-  getRootNode?: () => Document | ShadowRoot | Node
-}
+// interface Ctx {
+//   getRootNode?: () => Document | ShadowRoot | Node
+// }
 
 export function defineDomHelpers<T>(helpers: T) {
   const dom = {
-    getRootNode: (ctx: Ctx) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
-    getDoc: (ctx: Ctx) => getDocument(dom.getRootNode(ctx)),
-    getWin: (ctx: Ctx) => dom.getDoc(ctx).defaultView ?? window,
-    getActiveElement: (ctx: Ctx) => dom.getDoc(ctx).activeElement as HTMLElement | null,
-    getById: <T = HTMLElement>(ctx: Ctx, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
-    createEmitter: (ctx: Ctx, target: HTMLElement) => {
+    getRootNode: (ctx: any) => (ctx.getRootNode?.() ?? document) as Document | ShadowRoot,
+    getDoc: (ctx: any) => getDocument(dom.getRootNode(ctx)),
+    getWin: (ctx: any) => dom.getDoc(ctx).defaultView ?? window,
+    getActiveElement: (ctx: any) => dom.getDoc(ctx).activeElement as HTMLElement | null,
+    getById: <T = HTMLElement>(ctx: any, id: string) => dom.getRootNode(ctx).getElementById(id) as T | null,
+    createEmitter: (ctx: any, target: HTMLElement) => {
       const win = dom.getWin(ctx)
       return function emit(evt: string, detail: Record<string, any>, options?: EventInit) {
         const { bubbles = true, cancelable, composed = true } = options ?? {}
@@ -125,8 +125,8 @@ export function contains(
   parent: HTMLElement | EventTarget | null | undefined,
   child: HTMLElement | EventTarget | null,
 ) {
-  if (!parent) 
-return false
+  if (!parent)
+    return false
   return parent === child || (isHTMLElement(parent) && isHTMLElement(child) && parent.contains(child))
 }
 
@@ -134,13 +134,13 @@ export function isHTMLElement(v: any): v is HTMLElement {
   return typeof v === 'object' && v?.nodeType === Node.ELEMENT_NODE && typeof v?.nodeName === 'string'
 }
 
-export function isDisabled (el: HTMLElement | null): boolean {
-  return el?.getAttribute("disabled") != null || !!el?.getAttribute("aria-disabled") === true
+export function isDisabled(el: HTMLElement | null): boolean {
+  return el?.getAttribute('disabled') != null || !!el?.getAttribute('aria-disabled') === true
 }
 
 export function isElementEditable(el: HTMLElement | null) {
-  if (el == null) 
-return false
+  if (el == null)
+    return false
   try {
     const win = getWindow(el)
     return (
@@ -149,13 +149,13 @@ return false
       || el.isContentEditable
     )
   }
- catch {
+  catch {
     return false
   }
 }
 
 export function isVisible(el: Element) {
-  if (!isHTMLElement(el)) 
-return false
+  if (!isHTMLElement(el))
+    return false
   return el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0
 }
